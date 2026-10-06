@@ -1,0 +1,9 @@
+@use 'sass:meta';
+
+// Styles d'origine de la section « Tout est connecté » (landingPageTchakeda), scopés sous #tchk-story.
+#tchk-story {
+  @include meta.load-css('product-story/product-story.component');
+  @include meta.load-css('product-story/story-pages/story-pages.component');
+  @include meta.load-css('product-story/story-finance/story-finance.component');
+  @include meta.load-css('product-story/story-pos/story-pos.component');
+}

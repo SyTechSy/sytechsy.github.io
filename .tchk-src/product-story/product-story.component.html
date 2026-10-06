@@ -1,0 +1,122 @@
+<section #section id="features" class="ps" [class]="st.stateClass()" [style.--ps-steps]="st.steps.length"
+  aria-labelledby="ps-title">
+  <div class="ps__sticky">
+    <div class="ps__layout">
+
+      <!-- NARRATION -->
+      <div class="ps__copy">
+        <!-- <p class="ps__kicker"><span>Fonctionnalités</span><span>Tout est connecté</span></p> -->
+        <h2 id="ps-title" class="ps__title">
+          <span>Pilotez vos entreprises en toute sécurité.</span>
+          <span>Une vente. Toute l’entreprise suit.</span>
+        </h2>
+
+        <div class="ps__captions" aria-live="polite">
+          @for (c of st.prologue; track c.title; let i = $index) {
+          <div class="ps__caption ps__caption--pro" [class.is-active]="i === prologueIndex()"
+            [attr.aria-hidden]="i !== prologueIndex()">
+            <h3>{{ c.title }}</h3>
+            <p>{{ c.text }}</p>
+          </div>
+          }
+          @for (s of st.steps; track s.label; let i = $index) {
+          <div class="ps__caption" [class.is-active]="st.phase() === 'story' && i === st.step()"
+            [attr.aria-hidden]="st.phase() !== 'story' || i !== st.step()">
+            <span class="ps__caption-num">{{ (i < 9 ? '0' : '' ) + (i + 1) }}</span>
+                <h3>{{ s.title }}</h3>
+                <p>{{ s.text }}</p>
+          </div>
+          }
+        </div>
+
+      </div>
+
+      <!-- APPLICATION TCHAKEDA -->
+      <div #device class="ps__device" aria-hidden="true">
+        <div class="ps__chrome">
+          <span class="ps__chrome-nav"><i class="ri-arrow-left-line"></i><i class="ri-arrow-right-line"></i><i
+              class="ri-refresh-line"></i></span>
+          <div class="ps__url">
+            <i class="ri-equalizer-line"></i>
+            <span class="ps__url-texts">
+              @for (s of st.steps; track s.label; let i = $index) {
+              <span [class.is-active]="i === st.step()">{{ s.url }}</span>
+              }
+            </span>
+            <i class="ri-star-line ps__url-star"></i>
+          </div>
+          <span class="ps__chrome-avatar"></span>
+        </div>
+
+        <div #screen class="ps__screen">
+          <div class="ps__canvas">
+
+            <!-- Coquille de l'application : header bleu + menu -->
+            <div class="app">
+              <header class="app__head">
+                <img class="app__logo" src="assets/logo/tchakeda.webp" alt="" />
+                <i class="ri-menu-4-line app__burger"></i>
+                <span class="app__spacer"></span>
+                <i class="ri-notification-3-line app__icon"></i>
+                <i class="ri-lock-unlock-line app__icon"></i>
+                <span class="app__sep"></span>
+                <span class="app__org"><b>Fofana Corp</b><small>Diakairdia Sy</small></span>
+                <span class="app__avatar">HF</span>
+              </header>
+
+              <nav class="app__side">
+                @for (item of sidebar; track item.label) {
+                <div class="app__nav" [class.is-active]="isActive(item)">
+                  <i [class]="item.icon"></i><span>{{ item.label }}</span>
+                  @if (item.sub) {
+                  <i class="app__chev ri-arrow-right-s-line" [class.is-open]="isActive(item)"></i>
+                  }
+                </div>
+                @if (item.sub?.length) {
+                <div class="app__sub" [class.is-open]="isActive(item)">
+                  <div>
+                    @for (sub of item.sub; track sub.label) {
+                    <span [class.is-current]="sub.current.includes(st.nav())">{{ sub.label }}</span>
+                    }
+                  </div>
+                </div>
+                }
+                }
+                <span class="app__version">v0.1</span>
+              </nav>
+
+              <main class="app__main">
+                <app-story-pages></app-story-pages>
+                <app-story-finance></app-story-finance>
+              </main>
+            </div>
+
+            <!-- Caisse plein écran -->
+            <app-story-pos></app-story-pos>
+
+            <!-- Curseur -->
+            <span class="cursor"><svg viewBox="0 0 24 24">
+                <path d="M5 3l14 8-6.2 1.6L10 19z" />
+              </svg></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROLOGUE : du chaos à l'organisation, puis le portail vers l'application -->
+    <div #pro class="pro" aria-hidden="true">
+      <svg class="pro__threads">
+        @for (link of chain.slice(1); track $index) {
+        <path pathLength="1" />}
+        <circle class="pro__spark" r="4" cx="-20" cy="-20" />
+      </svg>
+      @for (m of modules; track m.name; let i = $index) {
+      <div class="pro__tile" [class.is-portal]="i === portalIndex" [style.--c1]="m.c1" [style.--c2]="m.c2"
+        [style.--d]="(i * 0.37) % 2 + 's'">
+        <span class="pro__card"><i [class]="m.icon"></i></span>
+        <b>{{ m.name }}</b>
+      </div>
+      }
+    </div>
+  </div>
+</section>

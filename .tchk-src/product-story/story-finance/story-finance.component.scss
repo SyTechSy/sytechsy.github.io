@@ -1,0 +1,1383 @@
+@use 'sass:list';
+@use '../story' as *;
+
+/* Pages finance : facture réelle + paiement (étapes 8-9), rapport financier + statistiques (étapes 10-11). */
+app-story-finance {
+  display: contents;
+}
+
+/* ======== FACTURE ======== */
+.pg-invoice {
+  @include page-at(6, 7);
+}
+
+.inv {
+  position: absolute;
+  top: u(4.45);
+  left: u(2.15);
+  bottom: 0;
+  width: u(39.7);
+  background: #fff;
+  box-shadow: 0 u(0.1) u(0.6) rgba(15, 23, 42, 0.05);
+}
+
+.inv__bar {
+  display: flex;
+  align-items: center;
+  gap: u(0.6);
+  height: u(3.2);
+  padding-left: u(1);
+  border-bottom: 1px solid $app-line;
+  font-size: u(1.05);
+  color: #3f8a2c;
+
+  i {
+    font-size: u(1.2);
+    color: #111827;
+  }
+}
+
+.inv__doc {
+  position: relative;
+  height: calc(100% - #{u(3.2)});
+  padding: u(1.6) u(1.25) 0;
+  overflow: hidden;
+  font-size: u(0.72);
+  color: #111827;
+
+  p {
+    margin: 0;
+  }
+}
+
+.inv__ribbon {
+  position: absolute;
+  top: u(1.3);
+  right: u(-2.6);
+  width: u(11);
+  padding: u(0.5) 0;
+  background: #fcf1e1;
+  color: #f0a44b;
+  font-size: u(0.6);
+  letter-spacing: 0.06em;
+  line-height: 1.5;
+  text-align: center;
+  rotate: 45deg;
+}
+
+.inv__company {
+  display: flex;
+  align-items: center;
+  gap: u(2.8);
+  padding-bottom: u(0.6);
+  border-bottom: 1px solid $app-line;
+  line-height: 1.45;
+
+  b {
+    display: block;
+    font-weight: 600;
+  }
+}
+
+.inv__logo {
+  display: flex;
+  align-items: center;
+  gap: u(0.2);
+  color: #1e3a8a;
+  font-size: u(1.05);
+  letter-spacing: 0.02em;
+
+  i {
+    font-size: u(2.6);
+    color: #1e40af;
+  }
+
+  b {
+    font-weight: 800;
+  }
+}
+
+.inv__title {
+  margin: u(2.1) 0 u(1.6);
+  font-family: inherit;
+  font-size: u(1.05);
+  font-weight: 600 !important;
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: #4b5563;
+}
+
+.inv__date {
+  margin: 0 u(2.6) u(0.6) 0 !important;
+  font-size: u(0.85);
+  text-align: right;
+}
+
+.inv__meta {
+  margin: u(0.15) 0 !important;
+  font-size: u(0.8);
+
+  b {
+    font-weight: 600;
+    margin-right: u(0.3);
+  }
+}
+
+.inv__table {
+  display: grid;
+  grid-template-columns: 1.4fr 2.7fr 1.45fr 0.75fr 1.2fr;
+  margin-top: u(0.5);
+  border-top: 1px solid $app-line;
+  border-left: 1px solid $app-line;
+
+  span {
+    padding: u(0.75) u(0.4);
+    font-size: u(0.64);
+    border-right: 1px solid $app-line;
+    border-bottom: 1px solid $app-line;
+    transition: color 0.4s ease, background 0.4s ease;
+  }
+
+  .th {
+    background: #f4f4f4;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .c,
+  .wide {
+    text-align: center;
+  }
+
+  .wide {
+    grid-column: span 4;
+  }
+
+  // Les montants changent : ils s'éclairent au moment où la facture est payée.
+  .is-live {
+    color: $app-blue-dark;
+    font-weight: 600;
+    animation: ps-row-glow 1.8s ease both;
+  }
+}
+
+.inv__words {
+  margin: u(1.2) 0 !important;
+  font-size: u(0.7);
+
+  b {
+    font-weight: 600;
+  }
+}
+
+.inv__signs {
+  display: flex;
+  justify-content: space-between;
+  padding: u(0.6) u(2.2) 0 u(3);
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: u(0.5);
+    font-size: u(0.85);
+
+    > b {
+      font-weight: 600;
+    }
+  }
+}
+
+.inv__stamp {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  svg {
+    width: u(4.8);
+    height: u(4.8);
+    fill: none;
+    stroke: #6d8bd6;
+    stroke-width: 1.3;
+  }
+
+  text {
+    fill: #6d8bd6;
+    stroke: none;
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+
+  .inv__stamp-in {
+    font-size: 7px;
+  }
+}
+
+.inv__sign {
+  margin-left: u(-0.8);
+  font-family: 'Great Vibes', 'Brush Script MT', 'Segoe Script', cursive;
+  font-style: normal;
+  font-size: u(1.5);
+  color: #111827;
+  rotate: -4deg;
+}
+
+.inv__name {
+  margin-top: u(-0.4);
+  font-size: u(0.85);
+}
+
+/* Paiement de facture */
+.invp {
+  position: absolute;
+  top: u(3.85);
+  left: u(43.4);
+  width: u(40.35);
+}
+
+.invp__card {
+  padding: u(1.25);
+  border-radius: u(0.3);
+  background: #fff;
+  box-shadow: 0 u(0.1) u(0.6) rgba(15, 23, 42, 0.05);
+
+  h5 {
+    margin: 0;
+    font-family: inherit;
+    font-size: u(0.95);
+    font-weight: 600 !important;
+    letter-spacing: 0.02em;
+    color: #111827;
+  }
+}
+
+.invp__pay {
+  height: u(12.7);
+}
+
+.invp__fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: u(1);
+  margin-top: u(0.7);
+}
+
+.invp__input {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: u(0.2);
+  height: u(3.4);
+  padding: 0 0 u(0.6) u(0.3);
+  border-bottom: 1px solid #9ca3af;
+  font-size: u(0.9);
+  color: #6b7280;
+
+  small {
+    position: absolute;
+    top: 0;
+    left: 0;
+    font-size: u(0.7);
+    color: $app-blue-dark;
+  }
+
+  &.is-filled {
+    color: #111827;
+  }
+
+  > i {
+    margin-left: auto;
+    color: #111827;
+  }
+}
+
+.invp__select {
+  color: #111827;
+}
+
+.invp__caret {
+  width: 1px;
+  height: u(1);
+  margin-bottom: u(0.1);
+  background: #111827;
+  animation: ps-caret 1s steps(1) infinite;
+}
+
+.invp__rest {
+  margin: u(0.9) 0 u(0.6);
+  font-size: u(0.85);
+  color: #4b5563;
+}
+
+.invp__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// Le paiement enregistré se confirme discrètement, à côté du bouton qui l'a déclenché.
+.invp__alert {
+  display: flex;
+  align-items: center;
+  gap: u(0.6);
+  height: u(2.5);
+  padding: 0 u(0.8);
+  border: 1px solid #b7e4c7;
+  border-radius: u(0.3);
+  background: #e8fbf0;
+  color: #3d8b5f;
+  font-size: u(0.72);
+  opacity: 0;
+  transform: translateY(u(0.5));
+  transition: opacity 0.2s ease, transform 0.2s ease;
+
+  i:first-child {
+    font-size: u(1.1);
+    color: #3f9b56;
+  }
+
+  &.is-on {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.4s ease, transform 0.6s $ease-out;
+  }
+}
+
+.invp__btn {
+  display: grid;
+  place-items: center;
+  height: u(1.9);
+  padding: 0 u(0.9);
+  border-radius: 999px;
+  background: #2f76df;
+  color: #fff;
+  font-size: u(0.75);
+  font-weight: 600;
+
+  @include at(7) {
+    animation: ps-press 0.35s $ease-out 2.15s both;
+  }
+}
+
+.invp__history {
+  margin-top: u(1.3);
+}
+
+.invp__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.invp__badge {
+  padding: u(0.35) u(0.75);
+  border-radius: 999px;
+  background: #fdf3cc;
+  color: #d98b06;
+  font-size: u(0.7);
+  font-weight: 500;
+}
+
+.invp__sums {
+  display: flex;
+  justify-content: space-between;
+  margin: u(1) 0 u(0.9);
+
+  span {
+    display: flex;
+    flex-direction: column;
+    gap: u(0.4);
+  }
+
+  span:last-child {
+    align-items: flex-end;
+  }
+
+  small {
+    font-size: u(0.72);
+    font-weight: 600;
+    color: #4b5563;
+  }
+}
+
+.invp__pill {
+  padding: u(0.3) u(0.6);
+  border-radius: u(0.5);
+  font-size: u(0.85);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+
+  &--green {
+    background: #effcf4;
+    color: #15803d;
+  }
+
+  &--blue {
+    background: #f3f4fe;
+    color: $app-blue-dark;
+  }
+}
+
+// Le nouveau paiement s'insère en tête de l'historique en ouvrant sa place.
+.invp__grow {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+
+  > div {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  &.is-open {
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.7s $ease-out 0.15s;
+  }
+}
+
+.invp__entry {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  row-gap: u(0.35);
+  margin-bottom: u(0.55);
+  padding: u(0.7) u(0.7) u(0.6);
+  border: 1px solid #eceef2;
+  border-radius: u(0.4);
+  font-size: u(0.65);
+
+  > b {
+    font-weight: 600;
+  }
+
+  > small {
+    font-size: u(0.65);
+    color: #6b7280;
+  }
+
+  > small:nth-of-type(2) {
+    text-align: right;
+    color: #9ca3af;
+  }
+
+  &--new {
+    background: #fff;
+
+    .is-open & {
+      animation: ps-row-glow 2.4s ease 0.6s both;
+    }
+  }
+}
+
+.invp__mode {
+  display: flex;
+  align-items: center;
+  gap: u(0.3);
+  color: #2e8b57;
+  font-size: u(0.65);
+
+  &--chip {
+    display: inline-flex;
+    margin: 0 u(1.8) 0 u(0.6);
+    padding: u(0.25) u(0.5);
+    border-radius: 999px;
+    background: #eef6ee;
+  }
+}
+
+.invp__state {
+  display: grid;
+  justify-items: start;
+
+  > span {
+    grid-area: 1 / 1;
+    display: flex;
+    align-items: center;
+    gap: u(0.35);
+    padding: u(0.3) u(0.6);
+    border-radius: 999px;
+    font-size: u(0.72);
+    font-weight: 600;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+}
+
+.invp__wait {
+  background: #fcf4e7;
+  color: #c2410c;
+
+  .is-valid & {
+    opacity: 0;
+  }
+}
+
+// En attente → Validé : le statut bascule avec un léger rebond, puis ne bouge plus.
+.invp__ok {
+  background: #eef7ee;
+  color: #2e7d32;
+  opacity: 0;
+  transform: scale(0.85);
+
+  .is-valid & {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.3s ease, transform 0.5s $ease-pop;
+  }
+}
+
+.invp__acts {
+  display: flex;
+  gap: u(0.4);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+
+  > span {
+    display: flex;
+    align-items: center;
+    gap: u(0.3);
+    padding: u(0.3) u(0.6);
+    border-radius: u(0.3);
+    font-size: u(0.72);
+    font-weight: 600;
+  }
+
+  &.is-gone {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+.invp__validate {
+  border: 1px solid #cfe6d1;
+  background: #eef7ee;
+  color: #3c7d44;
+
+  @include at(7) {
+    animation: ps-press 0.35s $ease-out 3.2s both;
+  }
+}
+
+.invp__reject {
+  border: 1px solid #f6d4d4;
+  background: #fcf1f1;
+  color: #dc2626;
+}
+
+.invp__split {
+  display: flex;
+  align-items: center;
+  margin: u(1.2) 0 0 u(0.7);
+  font-size: u(0.72);
+
+  b {
+    font-size: u(0.8);
+    font-weight: 600;
+  }
+}
+
+/* ======== RAPPORT FINANCIER & STATISTIQUES ======== */
+.pg-report {
+  padding-top: 0;
+  @include page-at(9, 10);
+}
+
+// La caméra fait défiler le rapport jusqu'aux statistiques.
+.rep {
+  padding: 0 u(1.2) u(1.2);
+  background: #fff;
+  transition: transform 0.6s $ease-camera;
+
+  @include at(10) {
+    transform: translateY(u(-28));
+    transition: transform 1.5s $ease-camera 0.25s;
+  }
+
+  h6 {
+    display: flex;
+    align-items: center;
+    gap: u(0.5);
+    margin: 0 0 u(0.8);
+    font-family: inherit;
+    font-size: u(0.85);
+    font-weight: 600 !important;
+    color: #111827;
+
+    i {
+      font-size: u(1.1);
+      color: #1e3a8a;
+    }
+  }
+}
+
+.rep__tab {
+  display: inline-flex;
+  align-items: center;
+  gap: u(0.5);
+  height: u(3.7);
+  padding: u(0.6) u(1.3) 0;
+  border-bottom: 2px solid $app-blue-dark;
+  color: $app-blue-dark;
+  font-size: u(0.8);
+  font-weight: 600;
+}
+
+.rep__kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: u(1);
+  margin-top: u(0.75);
+  border-top: 1px solid #eceef2;
+  padding-top: u(0.75);
+}
+
+.rep__kpi {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: u(0.3);
+  height: u(5.35);
+  padding: u(1) u(0.9);
+  border: 1px solid #eef0f3;
+  border-radius: u(0.6);
+  font-size: u(0.72);
+  color: #4b5563;
+
+  small {
+    font-size: u(0.72);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: #3b82f6;
+  }
+
+  b {
+    font-size: u(1.1);
+    font-weight: 600;
+    color: #111827;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .is-red,
+  em {
+    color: #cb3a32;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  strong {
+    font-weight: 600;
+    color: #111827;
+  }
+
+  > i {
+    position: absolute;
+    right: u(1);
+    top: 50%;
+    display: grid;
+    place-items: center;
+    width: u(2.5);
+    height: u(2.5);
+    margin-top: u(-1.25);
+    border-radius: 50%;
+    background: #f1f2f6;
+    color: #374151;
+    font-size: u(1.15);
+  }
+}
+
+.rep.is-live .rep__kpi--touch {
+  animation: ps-kpi-touch 1.8s $ease-out both;
+}
+
+.rep__card {
+  margin-top: u(1.1);
+  padding: u(1.2);
+  border: 1px solid #eef0f3;
+  border-radius: u(0.6);
+  background: #fbfbfd;
+}
+
+.rep__tables {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: u(1);
+  align-items: start;
+  height: u(22.35);
+}
+
+.rep__row {
+  display: grid;
+  grid-template-columns: 2.1fr 0.55fr 1.5fr 0.75fr;
+  align-items: center;
+  height: u(2.1);
+  padding: 0 u(0.5);
+  border-bottom: 1px solid #f1f2f4;
+  background: #fff;
+  font-size: u(0.7);
+  color: #1e3a8a;
+
+  > span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  > span:not(:first-child) {
+    text-align: right;
+  }
+
+  &--head {
+    height: u(1.8);
+    font-weight: 600;
+    color: #111827;
+  }
+
+  &--total {
+    background: #edf6fe;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  // Les lignes touchées par la vente et le paiement s'éclairent quand le rapport se recalcule.
+  .rep.is-live &.is-changed {
+    animation: ps-row-glow 2s ease both;
+  }
+}
+
+.rep__tbl--3 .rep__row {
+  grid-template-columns: 2fr 1.6fr 0.8fr;
+}
+
+.rep__amt {
+  color: #111827;
+  font-variant-numeric: tabular-nums;
+}
+
+.rep__pct {
+  display: inline-block;
+  padding: u(0.1) u(0.35);
+  border-radius: u(0.3);
+  background: #e8f0fe;
+  color: $app-blue-dark;
+  font-style: normal;
+  font-size: u(0.6);
+  font-weight: 600;
+
+  &--warm {
+    background: #fdf1e3;
+    color: #d97706;
+  }
+}
+
+.rep__lower {
+  display: grid;
+  grid-template-columns: 1.3fr 0.95fr 0.95fr;
+  grid-template-areas: 'seller d1 d2' 'seller goal goal';
+  grid-template-rows: 1fr auto;
+  gap: u(1);
+  height: u(19.7);
+}
+
+.rep__tbl--seller {
+  grid-area: seller;
+
+  .rep__row {
+    grid-template-columns: 1.6fr 1.4fr 1fr 0.4fr;
+  }
+}
+
+.rep__donut {
+  padding: u(1);
+  border: 1px solid #eef0f3;
+  border-radius: u(0.6);
+  background: #fff;
+
+  svg {
+    flex-shrink: 0;
+    width: u(5.4);
+    height: u(5.4);
+  }
+}
+
+.rep__donut-body {
+  display: flex;
+  align-items: center;
+  gap: u(1);
+  margin-top: u(1);
+}
+
+.rep__ring,
+.rep__seg {
+  fill: none;
+  stroke-width: 5.2;
+}
+
+.rep__ring {
+  stroke: #eef0f3;
+}
+
+.rep__seg {
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+
+  // Les parts du chiffre d'affaires se dessinent une à une quand la caméra arrive.
+  @include at(10) {
+    animation: ps-seg 0.9s $ease-out calc(1.2s + var(--seg-delay, 0s)) backwards;
+  }
+}
+
+@keyframes ps-seg {
+  from {
+    stroke-dasharray: 0 100;
+  }
+}
+
+.rep__donut-k,
+.rep__donut-v {
+  text-anchor: middle;
+  fill: #6b7280;
+  font-size: 3px;
+}
+
+.rep__donut-v {
+  fill: #111827;
+  font-size: 4.2px;
+  font-weight: 600;
+}
+
+.rep__legend {
+  display: flex;
+  flex-direction: column;
+  gap: u(0.55);
+  flex: 1;
+  min-width: 0;
+  font-size: u(0.56);
+  color: #374151;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: u(0.35);
+    white-space: nowrap;
+  }
+
+  i {
+    width: u(0.5);
+    height: u(0.5);
+    border-radius: 50%;
+  }
+
+  b {
+    font-weight: 600;
+  }
+
+  em {
+    margin-left: auto;
+    background: none;
+    box-shadow: inset 0 0 0 999px rgba(0, 0, 0, 0.04);
+  }
+}
+
+.rep__legend-total {
+  justify-content: space-between;
+  margin-top: u(0.4);
+  padding-top: u(0.6);
+  border-top: 1px solid #eef0f3;
+  font-size: u(0.62);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.rep__goal {
+  grid-area: goal;
+  display: grid;
+  grid-template-columns: 0.7fr 1.35fr 1.1fr;
+  padding: u(0.7) u(0.9);
+  border: 1px solid #eef0f3;
+  border-radius: u(0.5);
+  background: #fff;
+  font-size: u(0.6);
+  color: #6b7280;
+
+  > span {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: u(0.15);
+    padding: 0 u(0.8);
+    border-left: 1px solid #eef0f3;
+  }
+
+  > span:first-child {
+    padding-left: u(1.8);
+    border: 0;
+    position: relative;
+
+    i {
+      position: absolute;
+      left: 0;
+      top: 50%;
+      margin-top: u(-0.5);
+      font-size: u(1);
+      color: #e8833a;
+    }
+  }
+
+  small {
+    font-size: u(0.55);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: #9ca3af;
+  }
+
+  b {
+    font-size: u(0.72);
+    font-weight: 600;
+    color: #cd7b2e;
+  }
+
+  em {
+    font-style: normal;
+    font-weight: 600;
+    color: #cd7b2e;
+  }
+
+  > span:last-child {
+    position: relative;
+    padding-left: u(1.8);
+    color: #374151;
+
+    i {
+      position: absolute;
+      left: u(0.7);
+      top: u(0.1);
+      color: #e8833a;
+    }
+  }
+}
+
+/* Graphique CA journalier vs Dépenses */
+.rep__chart {
+  height: u(21);
+  background: #fff;
+
+  h6 b {
+    font-weight: 600;
+  }
+}
+
+.rep__chart-legend {
+  display: flex;
+  justify-content: center;
+  gap: u(1);
+  margin-bottom: u(1.2);
+  font-size: u(0.65);
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: u(0.3);
+  }
+
+  i {
+    width: u(0.75);
+    height: u(0.6);
+  }
+}
+
+.is-ca {
+  background: #4b89e2;
+}
+
+.is-dep {
+  background: #ec8d53;
+}
+
+.rep__plot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: u(11.2);
+  margin-left: u(2.2);
+}
+
+.rep__grid {
+  position: relative;
+  height: 0;
+  border-top: 1px dashed #e5e7eb;
+
+  em {
+    position: absolute;
+    right: calc(100% + #{u(0.4)});
+    top: u(-0.4);
+    font-style: normal;
+    font-size: u(0.55);
+    color: #6b7280;
+  }
+}
+
+.rep__days {
+  position: absolute;
+  inset: 0;
+  display: flex;
+}
+
+.rep__day {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1px;
+
+  i {
+    display: block;
+    width: u(0.8);
+    transform-origin: bottom;
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+
+    @include at(10) {
+      transform: none;
+      transition: transform 0.9s $ease-out calc(1.4s + var(--i) * 0.025s);
+    }
+  }
+
+  small {
+    position: absolute;
+    top: calc(100% + #{u(0.5)});
+    font-size: u(0.52);
+    color: #374151;
+  }
+}
+
+// La barre du jour (la vente d'aujourd'hui) respire une fois pour être repérée.
+.is-today {
+  @include at(10) {
+    box-shadow: 0 0 0 u(0.25) rgba(75, 137, 226, 0.25);
+  }
+}
+
+/* Le regard du système : une fois les barres posées, l'écart anormal du 15 est repéré et nommé. */
+.is-dep.is-alert {
+  position: relative;
+  transition: transform 0.3s ease, box-shadow 0.4s ease;
+
+  @include at(10) {
+    box-shadow: 0 0 0 u(0.25) rgba(236, 141, 83, 0.35);
+    transition: transform 0.9s $ease-out calc(1.4s + var(--i) * 0.025s), box-shadow 0.6s ease 3s;
+  }
+}
+
+.rep__insight {
+  position: absolute;
+  bottom: 62%;
+  left: calc(50% + #{u(1.4)});
+  display: flex;
+  flex-direction: column;
+  gap: u(0.1);
+  padding: u(0.5) u(0.7);
+  border-radius: u(0.4);
+  background: #0f172a;
+  color: #cbd5e1;
+  font-size: u(0.52);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(u(-0.6));
+  transition: opacity 0.2s ease, transform 0.2s ease;
+
+  b {
+    font-size: u(0.58);
+    color: #fdba74;
+  }
+
+  i {
+    position: absolute;
+    top: u(0.5);
+    right: u(0.6);
+    color: #fdba74;
+  }
+
+  @include at(10) {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.5s ease 3.1s, transform 0.7s $ease-out 3.1s;
+  }
+}
+
+/* ======== LA FACTURE ÉCLATÉE (étape 7) ========
+   Vue éclatée isométrique : la facture bascule, chaque couche s'élève et dit de quel module elle vient,
+   puis tout retombe à plat — le tampon en dernier, avec un « clac ». Une seule timeline CSS de 6,4 s. */
+$inv-t: 6.4s;
+
+.pg-invoice {
+  perspective: u(230);
+  perspective-origin: 50% 40%;
+}
+
+.inv {
+  transform-origin: 50% 45%;
+
+  @include at(6) {
+    transform-style: preserve-3d;
+    animation: inv-tilt $inv-t $ease-camera both;
+  }
+}
+
+.inv__doc {
+  @include at(6) {
+    overflow: visible;
+    transform-style: preserve-3d;
+  }
+}
+
+@keyframes inv-tilt {
+  0%,
+  12% {
+    transform: none;
+  }
+
+  30%,
+  72% {
+    transform: translateX(u(15)) translateY(u(14)) rotateX(50deg) rotateZ(-14deg) scale(0.66);
+  }
+
+  90%,
+  100% {
+    transform: none;
+  }
+}
+
+// Les autres éléments de la page s'effacent : la facture est seule en scène.
+.invp,
+.pg-invoice .pg__crumb,
+.inv__ribbon {
+  @include at(6) {
+    animation: inv-hush $inv-t ease both;
+  }
+}
+
+@keyframes inv-hush {
+  0%,
+  12% {
+    opacity: 1;
+  }
+
+  24%,
+  80% {
+    opacity: 0;
+  }
+
+  94%,
+  100% {
+    opacity: 1;
+  }
+}
+
+// Chaque couche monte à sa hauteur : l'éventail s'ouvre depuis le bas de la facture, sans que les couches se cachent.
+$inv-layers: (
+  '.inv__company': (31, 0s),
+  '.inv__title': (27, 0.06s),
+  '.inv__meta': (20, 0.12s),
+  '.inv__table': (13, 0.18s),
+  '.inv__words': (7, 0.24s)
+);
+
+@each $sel, $cfg in $inv-layers {
+  #{$sel} {
+    position: relative;
+
+    @include at(6) {
+      transform-style: preserve-3d;
+      --z: #{u(list.nth($cfg, 1))};
+      animation: inv-lift $inv-t $ease-out list.nth($cfg, 2) both;
+    }
+  }
+}
+
+// Le tampon et la signature flottent juste au-dessus du papier… et retombent en dernier, avec un « clac ».
+.inv__signs {
+  position: relative;
+
+  @include at(6) {
+    transform-style: preserve-3d;
+    --z: #{u(4)};
+    animation: inv-lift-stamp $inv-t $ease-out 0.3s both;
+  }
+}
+
+@keyframes inv-lift {
+  0%,
+  20% {
+    transform: none;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  36%,
+  70% {
+    transform: translateZ(var(--z));
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 u(1.2) u(2.4) rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(0, 168, 232, 0.35);
+  }
+
+  84%,
+  100% {
+    transform: none;
+    background: transparent;
+    box-shadow: none;
+  }
+}
+
+@keyframes inv-lift-stamp {
+  0%,
+  20% {
+    transform: none;
+  }
+
+  38%,
+  74% {
+    transform: translateZ(var(--z)) rotateZ(-3deg);
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 u(1.6) u(3) rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(0, 168, 232, 0.35);
+  }
+
+  // Le « clac » : il tombe un peu trop loin, puis se pose.
+  84% {
+    transform: translateZ(u(-0.6)) scale(0.985);
+    background: transparent;
+    box-shadow: none;
+  }
+
+  88%,
+  100% {
+    transform: none;
+  }
+}
+
+// Étiquettes : chaque couche dit d'où vient son information.
+.inv__tag {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + #{u(3.2)});
+  display: flex;
+  flex-direction: column;
+  gap: u(0.1);
+  padding: u(0.55) u(1) u(0.55) u(1.1);
+  border-left: 3px solid #00a8e8;
+  border-radius: 0 u(0.4) u(0.4) 0;
+  background: #0f172a;
+  box-shadow: 0 u(0.8) u(2) rgba(15, 23, 42, 0.35);
+  color: #7dd3fc;
+  font-size: u(0.9);
+  font-weight: 500;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(u(-1), -50%) rotateZ(14deg) rotateX(-50deg);
+  transform-origin: 0 50%;
+  pointer-events: none;
+
+  i {
+    position: absolute;
+    top: 50%;
+    right: calc(100% + #{u(0.5)});
+    display: grid;
+    place-items: center;
+    width: u(2);
+    height: u(2);
+    margin-top: u(-1);
+    border-radius: 50%;
+    background: #00a8e8;
+    color: #fff;
+    font-size: u(1.05);
+    box-shadow: 0 0 0 u(0.3) rgba(0, 168, 232, 0.25);
+  }
+
+  b {
+    color: #fff;
+    font-size: u(1.05);
+    font-weight: 600;
+  }
+
+  // Un trait relie l'étiquette au bord de la couche.
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    width: u(2.6);
+    height: 2px;
+    background: #00a8e8;
+  }
+
+  // Chaque étiquette suit le rythme de sa couche (même décalage).
+  @include at(6) {
+    animation: inv-tag $inv-t ease both;
+    animation-delay: inherit;
+  }
+}
+
+@keyframes inv-tag {
+  0%,
+  38% {
+    opacity: 0;
+    transform: translate(u(-1), -50%) rotateZ(14deg) rotateX(-50deg);
+  }
+
+  46%,
+  68% {
+    opacity: 1;
+    transform: translate(0, -50%) rotateZ(14deg) rotateX(-50deg);
+  }
+
+  74%,
+  100% {
+    opacity: 0;
+    transform: translate(u(-0.5), -50%) rotateZ(14deg) rotateX(-50deg);
+  }
+}
+
+// Lignes de rappel : comme sur un schéma technique, chaque couche est reliée à sa place sur le papier.
+@each $sel, $cfg in $inv-layers {
+  #{$sel}::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: u(0.4);
+    width: 0;
+    height: u(list.nth($cfg, 1));
+    border-left: 1px dashed #00a8e8;
+    transform-origin: 0 0;
+    transform: rotateX(-90deg);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  #{$sel} {
+    @include at(6) {
+      &::after {
+        animation: inv-guide $inv-t ease list.nth($cfg, 2) both;
+      }
+    }
+  }
+}
+
+@keyframes inv-guide {
+  0%,
+  34% {
+    opacity: 0;
+  }
+
+  42%,
+  68% {
+    opacity: 0.7;
+  }
+
+  76%,
+  100% {
+    opacity: 0;
+  }
+}

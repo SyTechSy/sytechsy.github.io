@@ -1,0 +1,56 @@
+@use 'sass:list';
+@use 'sass:string';
+
+/* ------------------------------------------------------------------
+   MOTION SYSTEM TCHAKEDA — partagé par l'histoire et ses écrans
+   · $ease-out    : entrées, réponses à une action (rapide puis se pose)
+   · $ease-camera : zooms et déplacements de caméra (symétrique, calme)
+   · Durées : micro 200ms · élément 500–700ms · caméra 1.1s
+   ------------------------------------------------------------------ */
+$ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+$ease-camera: cubic-bezier(0.65, 0, 0.35, 1);
+$ease-pop: cubic-bezier(0.34, 1.4, 0.64, 1);
+$camera: 1.1s;
+
+// Couleurs relevées sur les captures de l'application
+$app-blue: #569af8;
+$app-blue-dark: #2c75dd;
+$app-action: #3c7bea;
+$app-blue-soft: #d1e3f8;
+$app-bg: #f6f7fb;
+$app-line: #e5e7eb;
+$app-ink: #1f2937;
+$app-muted: #6b7280;
+$app-green: #3a8a2e;
+$app-red: #eb3323;
+$app-orange: #e8833a;
+
+// L'unité d'écran : 1u = 20 px de l'application réelle.
+@function u($n) {
+  @return calc(#{$n} * var(--u));
+}
+
+// Applique un style quand l'histoire est à l'une des étapes données : @include at(1, 2) { … }
+@mixin at($steps...) {
+  $selectors: ();
+  @each $s in $steps {
+    $selectors: list.append($selectors, string.unquote('.ps.s#{$s} &'), $separator: comma);
+  }
+  #{$selectors} {
+    @content;
+  }
+}
+
+// Page de l'application visible uniquement aux étapes données (fondu + léger glissement).
+@mixin page-at($steps...) {
+  opacity: 0;
+  transform: translateY(u(1));
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+
+  @include at($steps...) {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.55s ease 0.2s, transform 0.7s $ease-out 0.2s;
+  }
+}

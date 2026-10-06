@@ -1,0 +1,236 @@
+<!-- PAGE VENTES -->
+<section class="pg pg-ventes">
+  <div class="pg-card pg-ventes__card">
+    <div class="pg__bar">
+      <h4>Ventes</h4>
+      <span class="pg__select"><i class="pg__dot"></i><b>Année</b><i class="ri-arrow-down-s-fill"></i></span>
+      <span class="pg__select">Tous les vendeurs<i class="ri-arrow-down-s-fill"></i></span>
+      <span class="pg__select">Toutes les boutiques<i class="ri-arrow-down-s-fill"></i></span>
+      <i class="ri-refresh-line pg__tool"></i>
+      <i class="ri-printer-line pg__tool"></i>
+      <span class="pg__cta" data-anchor="feere"><i class="ri-shopping-cart-2-line"></i>Feere kɛ yɔrɔ</span>
+    </div>
+
+    <div class="pg__kpis">
+      <div class="kpi kpi--lilac kpi--touch">
+        <small>TOTAL VENTES</small>
+        <b>{{ st.salesTotal() }}</b>
+        <span>Nbre d'articles : {{ st.salesItems() }}</span>
+        <span>Remboursé : 1<i class="ri-close-circle-fill kpi__red"></i></span>
+        <i class="kpi__icon ri-shopping-cart-2-line"></i>
+      </div>
+      <div class="kpi kpi--mint kpi--touch">
+        <small>MONTANT NET</small>
+        <b>{{ st.fmt(st.salesNet()) }} CFA</b>
+        <span>Caisse Ouverte : {{ st.fmt(st.caisseOpen()) }}</span>
+        <span>Caisse Fermée : <em>78 000</em></span>
+        <i class="kpi__icon ri-money-dollar-box-line"></i>
+      </div>
+      <div class="kpi kpi--rose">
+        <small>TOP 3 PRODUITS</small>
+        <span class="kpi__row"><b>#1</b> Velo<em>2 unités</em></span>
+        <span class="kpi__row"><b>#2</b> Seau plastique<em>2 unités</em></span>
+        <span class="kpi__row"><b>#3</b> Parfum Dubaï<em>1 unités</em></span>
+        <i class="kpi__icon ri-shopping-bag-3-line"></i>
+      </div>
+      <div class="kpi kpi--gray">
+        <small>TOP 3 VENDEURS</small>
+        <span class="kpi__row"><b>#1</b> Diakairdia Sy<em>{{ st.salesTotal() }} ventes</em></span>
+        <i class="kpi__icon ri-user-star-line"></i>
+      </div>
+    </div>
+
+    <div class="pg-card pg__list">
+      <div class="pg__list-head">
+        <h5>Liste des factures</h5>
+        <span class="pg__search"><i class="ri-search-line"></i>N° facture, vendeur ou cli</span>
+        <span class="pg__pager">1 - {{ st.salesTotal() }} / {{ st.salesTotal() }}<i class="ri-arrow-left-s-line"></i><i
+            class="ri-arrow-right-s-line"></i></span>
+      </div>
+      <div class="pg__tabs">
+        <span class="is-active"><i class="ri-shopping-cart-2-line"></i>Ventes</span>
+        <span><i class="ri-hand-coin-line"></i>Crédits</span>
+        <span><i class="ri-file-list-2-line"></i>Commande</span>
+      </div>
+      <div class="tbl tbl--ventes">
+        <div class="tbl__head">
+          <span>Date &amp; Heure<i class="ri-arrow-down-s-line"></i></span>
+          <span>Numéro Facture<i class="ri-arrow-up-down-line"></i></span>
+          <span>Boutique<i class="ri-arrow-up-down-line"></i></span>
+          <span>Vendeur<i class="ri-arrow-up-down-line"></i></span>
+          <span>Montant Payé<i class="ri-arrow-up-down-line"></i></span>
+          <span>Client<i class="ri-arrow-up-down-line"></i></span>
+          <span>Statut<i class="ri-arrow-up-down-line"></i></span>
+        </div>
+        <div class="tbl__body">
+          <div class="tbl__row tbl__row--new">
+            <i class="beam"></i>
+            <span>28/09/2026 17:17</span><span>51929281717F</span><span><em class="chip">Ma Boutique</em></span>
+            <span>Diakairdia Sy</span><span>5 700 CFA</span><span>Inconnu</span>
+            <span><i class="ri-checkbox-circle-fill st st--done"></i></span>
+          </div>
+          @for (row of invoices; track row.num) {
+          <div class="tbl__row">
+            <span>{{ row.date }}</span><span>{{ row.num }}</span><span><em class="chip">Ma Boutique</em></span>
+            <span>Diakairdia Sy</span>
+            <span>@if (row.refunded) {<s>{{ row.refunded }}</s>} {{ row.amount }}</span>
+            <span>Inconnu</span>
+            <span>
+              @if (row.status === 'refund') {<i class="ri-close-circle-fill st st--refund"></i>}
+              @else if (row.status === 'paid') {<i class="ri-verified-badge-fill st st--paid"></i>}
+              @else {<i class="ri-checkbox-circle-fill st st--done"></i>}
+            </span>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE BOUTIQUE -->
+<section class="pg pg-shop">
+  <span class="pg__crumb"><i class="ri-arrow-left-s-line"></i>Boutique</span>
+  <div class="pg-card shop">
+    <div class="shop__top">
+      <div class="shop__box shop__actions">
+        <h6><u>ACTION</u> DE LA BOUTIQUE</h6>
+        <p>Status : <em>Actif</em><i class="shop__toggle"></i></p>
+        <p>Couleur :<i class="shop__color"></i></p>
+        <p>Supprimer la boutique<i class="ri-delete-bin-line shop__bin"></i></p>
+      </div>
+      <div class="shop__box shop__info">
+        <h6><u>INFOR</u>MATIONS SUR LA BOUTIQUE</h6>
+        <i class="ri-edit-box-line shop__edit"></i>
+        <div class="shop__fields">
+          <span><small>Nouveau nom</small>Ma Boutique</span>
+          <span class="is-empty">Nouvelle adresse</span>
+          <span><small>Nouvelle email</small>contact&#64;maboutique.ml</span>
+          <span><small>Nouvelle telephone</small>+223 20 00 00 00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="shop__box shop__products">
+      <div class="shop__head">
+        <h6><u>PRODU</u>ITS DE LA BOUTIQUE</h6>
+        <b class="shop__count">54</b>
+        <i class="ri-delete-bin-line"></i><i class="ri-file-copy-2-line"></i><i class="ri-barcode-line"></i>
+        <span class="shop__search"><i class="ri-search-line"></i>Rechercher par nom ou catég<i
+            class="ri-arrow-down-s-fill"></i></span>
+      </div>
+      <div class="tbl tbl--shop">
+        <div class="tbl__head">
+          <span><i class="shop__check"></i></span><span>Photo</span><span>Nom produit</span><span>Description</span>
+          <span>Catégorie</span><span>Prix Vente</span><span>En stock</span><span>Type</span>
+        </div>
+        @for (p of shopProducts; track p.name; let i = $index) {
+        <div class="tbl__row" [class.is-updated]="p.sold && st.stockUpdated() > (p.sold - 1)">
+          <span><i class="shop__check"></i></span>
+          <span>
+            @if (p.image) {<img class="shop__thumb" [src]="'assets/story/' + p.image + '.jpg'" alt="" />}
+            @else {<span class="shop__thumb shop__thumb--letter">{{ p.letter }}</span>}
+          </span>
+          <span>{{ p.name }}</span><span>{{ p.desc }}</span><span>{{ p.cat }}</span><span>{{ p.price }}</span>
+          <span class="shop__stock" [class.is-zero]="p.stock === 0">
+            @if (p.sold) {
+            <s>{{ p.stock }}</s><b>{{ st.stockUpdated() > (p.sold - 1) ? p.stock - 1 : p.stock }}</b>
+            } @else {
+            {{ p.stock }}@if (p.stock === 0) {<i class="ri-alarm-warning-fill"></i>}
+            }
+          </span>
+          <span>PHYSIQUE</span>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE COMPTABILITÉ · JOURNAL -->
+<section class="pg pg-journal">
+  <div class="pg__bar pg__bar--plain">
+    <h4>Entrées et Sorties</h4>
+    <span class="pg__select"><i class="pg__dot"></i><b>Année</b><i class="ri-arrow-down-s-fill"></i></span>
+    <span class="pg__select">Toutes les sources<i class="ri-arrow-down-s-fill"></i></span>
+    <span class="pg__cta pg__cta--dark">Effectuer un mouvement</span>
+  </div>
+
+  <div class="pg__kpis">
+    <div class="kpi kpi--caisse">
+      <small>CAISSE <i class="ri-eye-line"></i></small>
+      <b>{{ st.fmt(st.caisse()) }} CFA</b>
+      <span>Solde Année : <strong>{{ st.fmt(st.caisse() - 1119300) }} CFA</strong></span>
+      <span>CA Année : <strong>{{ st.fmt(st.caisse() + 1340700) }} CFA</strong></span>
+      <i class="kpi__icon ri-hand-coin-line"></i>
+    </div>
+    <div class="kpi kpi--bank">
+      <small>BANQUE <i class="ri-eye-line"></i></small>
+      <b>0 CFA</b>
+      <span>Solde Année : <strong>1 000 000 CFA</strong></span>
+      <span>CA Année : <strong>1 000 000 CFA</strong></span>
+      <i class="kpi__icon ri-bank-card-2-line"></i>
+    </div>
+    <div class="kpi kpi--mm">
+      <small>MOBILE MONEY <i class="ri-eye-line"></i></small>
+      <b>0 CFA</b>
+      <span>Solde Année : <strong>0 CFA</strong></span>
+      <span>CA Année : <strong>0 CFA</strong></span>
+      <i class="kpi__icon ri-smartphone-line"></i>
+    </div>
+    <div class="kpi kpi--credit">
+      <small>CRÉDIT <i class="ri-eye-line"></i></small>
+      <b>2 175 000 CFA</b>
+      <span>CF : <strong>0 CFA</strong></span>
+      <span>Montant payé : <strong>1 257 000 CFA</strong></span>
+      <i class="kpi__icon ri-hand-coin-fill"></i>
+    </div>
+  </div>
+
+  <div class="pg-card pg__list">
+    <div class="pg__list-head">
+      <span class="pg__search pg__search--left"><i class="ri-search-line"></i>Recherche…</span>
+      <span class="pg__pager">1 - {{ 14 + st.journalNew() }} sur {{ 14 + st.journalNew() }}<i
+          class="ri-arrow-left-s-line"></i><i class="ri-arrow-right-s-line"></i></span>
+    </div>
+    <div class="pg__tabs pg__tabs--six">
+      <span class="is-active"><i class="ri-list-check-2"></i>Toutes les entrées et sorties</span>
+      <span><i class="ri-arrow-down-line"></i>Entrée</span>
+      <span><i class="ri-arrow-up-line"></i>Sortie</span>
+      <span><i class="ri-exchange-line"></i>Transfert</span>
+      <span><i class="ri-hand-coin-line"></i>Créances Clts</span>
+      <span><i class="ri-truck-line"></i>Dettes Frs</span>
+    </div>
+    <div class="tbl tbl--journal">
+      <div class="tbl__head">
+        <span>N°</span><span>Date création</span><span>Origine</span><span>Désignation</span><span>Catégorie</span>
+        <span>Resp</span><span>Prix U</span><span>Qte</span><span>Montant</span><span>Source</span>
+      </div>
+      <div class="tbl__body" [style.--shown]="st.journalNew()">
+        <div class="tbl__row tbl__row--new" [class.is-in]="st.journalNew() > 1">
+          <span>FCT-003-09-2026</span><span>28/09/2026</span><span>FACTURATION</span><span>Prestation</span>
+          <span><em class="tag tag--blue">Paiement fa…</em></span><span>Hady Fof…</span><span>25 000
+            CFA</span><span>1</span>
+          <span class="amt amt--in">25 000 CFA</span><span><em class="tag tag--source">Caisse</em></span>
+        </div>
+        <div class="tbl__row tbl__row--new" [class.is-in]="st.journalNew() > 0">
+          <span>C-003-09-2026</span><span>28/09/2026</span><span>Feere kɛ yɔrɔ Ma…</span><span>Vente Feere kɛ y…</span>
+          <span><em class="tag tag--mauve">Boutique</em></span><span>Hady Fof…</span><span>5 700
+            CFA</span><span>3</span>
+          <span class="amt amt--in">5 700 CFA</span><span><em class="tag tag--source">Caisse</em></span>
+        </div>
+        @for (row of journal; track row.label) {
+        <div class="tbl__row">
+          <span>{{ row.num }}</span><span>{{ row.date }}</span><span>{{ row.origin }}</span><span>{{ row.label }}</span>
+          <span><em class="tag" [class]="'tag--' + row.catTone">{{ row.cat }}</em></span>
+          <span>{{ row.tone ? 'Hady Fof…' : '-' }}</span><span>{{ row.price }}</span><span>{{ row.qty }}</span>
+          <span class="amt" [class.amt--in]="row.tone === 'in'" [class.amt--out]="row.tone === 'out'">{{ row.amount
+            }}</span>
+          <span><em class="tag" [class.tag--source]="row.source !== 'Banque → Caisse'"
+              [class.tag--dark]="row.source === 'Banque → Caisse'">{{ row.source }}</em></span>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</section>

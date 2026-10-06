@@ -1,0 +1,258 @@
+<!-- PAGE FACTURE RÉELLE + PAIEMENT -->
+<section class="pg pg-invoice">
+  <span class="pg__crumb"><i class="ri-arrow-left-s-line"></i>Factures réelle</span>
+
+  <div class="inv">
+    <div class="inv__bar">Voir proforma <i class="ri-download-2-line"></i><i class="ri-printer-cloud-line"></i></div>
+    <div class="inv__doc">
+      <span class="inv__ribbon">PARTIELLEMENT<br />PAYÉE</span>
+      <div class="inv__company">
+        <span class="inv__logo"><i class="ri-settings-5-fill"></i><b>SyTech</b></span>
+        <span>
+          <b>SyTech Services</b>
+          <b>Secteur : Technologie</b>
+          Email : contact&#64;fofanacorp.ml Téléphone : +223 20 00 00 00
+        </span>
+        <span class="inv__tag"><i class="ri-building-2-line"></i><b>Votre entreprise</b>Paramètres</span>
+      </div>
+      <h6 class="inv__title">FACTURE : FCT-003-09-2026<span class="inv__tag"><i
+            class="ri-hashtag"></i><b>Numéro</b>Automatique</span></h6>
+      <p class="inv__date">Bamako, le 04-09-2026</p>
+      <p class="inv__meta"><b>Doit :</b> Sy<span class="inv__tag"><i class="ri-user-heart-line"></i><b>Client</b>Fiche
+          client</span></p>
+      <p class="inv__meta"><b>Objet :</b> Prestation</p>
+      <div class="inv__table">
+        <span class="th">Désignation</span><span class="th">Description</span><span class="th">Prix Unitaire
+          (CFA)</span>
+        <span class="th">Quantité</span><span class="th">Montant (CFA)</span>
+        <span>Suivi et Controle</span><span>Suivi et Controle en environement</span><span class="c">200 000</span>
+        <span class="c">6</span><span class="c">1 200 000</span>
+        <span class="wide">Total HT</span><span class="c">1 200 000</span>
+        <span class="wide">Montant payé</span><span class="c" [class.is-live]="st.invValidated()">{{ st.invValidated() ?
+          '1 025 000' : '1 000 000' }}</span>
+        <span class="wide">Reste à payer</span><span class="c" [class.is-live]="st.invValidated()">{{ st.invValidated()
+          ? '175 000' : '200 000' }}</span>
+        <span class="inv__tag"><i class="ri-box-3-line"></i><b>Articles & prix</b>Catalogue et stock</span>
+      </div>
+      <p class="inv__words"><b>Arrêté la présente facture à la somme de :</b> Un million deux-cent mille Francs
+        CFA.<span class="inv__tag"><i class="ri-calculator-line"></i><b>Montants</b>Comptabilité</span></p>
+      <div class="inv__signs">
+        <span class="inv__tag"><i class="ri-quill-pen-line"></i><b>Tampon & signature</b>Enregistrés une fois</span>
+        @for (who of ['Pour acquit', 'Directeur']; track who) {
+        <div>
+          <b>{{ who }}</b>
+          <span class="inv__stamp">
+            <svg viewBox="0 0 100 100">
+              <defs>
+                <path [attr.id]="'arc-' + $index" d="M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0" />
+              </defs>
+              <circle cx="50" cy="50" r="46" />
+              <circle cx="50" cy="50" r="30" />
+              <text>
+                <textPath [attr.href]="'#arc-' + $index" startOffset="4%">SyTechSy· Mali ·</textPath>
+              </text>
+              <text x="50" y="47" text-anchor="middle" class="inv__stamp-in">BAMAKO</text>
+              <text x="50" y="58" text-anchor="middle" class="inv__stamp-in">PROJET</text>
+            </svg>
+            <em class="inv__sign">Diakaridia Sy</em>
+          </span>
+          @if ($last) {<b class="inv__name">Diakaridia Sy</b>}
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="invp">
+    <div class="invp__card invp__pay">
+      <h5>Paiement de facture</h5>
+      <div class="invp__fields">
+        <span class="invp__input" data-anchor="inv-amount" [class.is-filled]="st.invAmount()">
+          @if (st.invAmount()) {<small>Montant paiement</small>{{ st.invAmount() }}<i class="invp__caret"></i>}
+          @else {Montant paiement}
+        </span>
+        <span class="invp__input invp__select" data-anchor="inv-mode">
+          <small>Mode de paiement</small>{{ st.invMode() ? 'Espèces' : 'Sélectionnez…' }}<i
+            class="ri-arrow-down-s-fill"></i>
+        </span>
+      </div>
+      <p class="invp__rest">Restant: {{ st.fmt(st.invPaid() ? st.invRemaining() : 200000) }} CFA</p>
+      <div class="invp__foot">
+        <span class="invp__alert" [class.is-on]="st.invPaid()"><i class="ri-checkbox-circle-fill"></i>Paiement
+          enregistré avec succès.<i class="ri-close-line"></i></span>
+        <span class="invp__btn" data-anchor="inv-pay">Payer la facture</span>
+      </div>
+    </div>
+
+    <div class="invp__card invp__history">
+      <div class="invp__head">
+        <h5>Historique des paiements</h5><span class="invp__badge">Partiellement payée</span>
+      </div>
+      <div class="invp__sums">
+        <span><small>Montant dû</small><b class="invp__pill invp__pill--green">1 200 000 CFA</b></span>
+        <span><small>Montant restant</small><b class="invp__pill invp__pill--blue">{{ st.fmt(st.invRemaining()) }}
+            CFA</b></span>
+      </div>
+      <div class="invp__entries">
+        <div class="invp__grow" [class.is-open]="st.invPaid()">
+          <div>
+            <div class="invp__entry invp__entry--new">
+              <span class="invp__mode"><i class="ri-money-dollar-box-line"></i>ESPECES</span>
+              <b>25 000 CFA</b>
+              <small>Encaissé par : Diakairdia Sy</small>
+              <small>28/09/2026</small>
+              <span class="invp__state" [class.is-valid]="st.invValidated()">
+                <span class="invp__wait"><i class="ri-time-line"></i>En attente de validation</span>
+                <span class="invp__ok"><i class="ri-checkbox-circle-fill"></i>Validé</span>
+              </span>
+              <span class="invp__acts" [class.is-gone]="st.invValidated()">
+                <span class="invp__validate" data-anchor="inv-valider"><i
+                    class="ri-checkbox-circle-line"></i>Valider</span>
+                <span class="invp__reject"><i class="ri-close-circle-line"></i>Rejeter</span>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="invp__entry">
+          <span class="invp__mode"><i class="ri-money-dollar-box-line"></i>ESPECES</span>
+          <b>1 000 000 CFA</b>
+          <small>Encaissé par : Diakairdia Sy</small>
+          <small>04/09/2026</small>
+          <span class="invp__state is-valid"><span class="invp__ok"><i
+                class="ri-checkbox-circle-fill"></i>Validé</span></span>
+        </div>
+      </div>
+      <p class="invp__split"><b>Répartition par mode de paiement</b><span class="invp__mode invp__mode--chip"><i
+            class="ri-money-dollar-box-line"></i>ESPECES</span>{{ st.invValidated() ? '1 025 000' : '1 000 000' }} CFA
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- PAGE RAPPORT FINANCIER (la caméra la fait défiler jusqu'aux statistiques) -->
+<section class="pg pg-report">
+  <div class="rep" [class.is-live]="st.reportLive()">
+    <div class="rep__tab"><i class="ri-bar-chart-fill"></i>Etat Mensuel</div>
+
+    <div class="rep__kpis">
+      <div class="rep__kpi rep__kpi--touch">
+        <small>Chiffre d'affaires du mois</small><b>{{ st.fmt(st.ca()) }} CFA</b>
+        <span><strong>{{ st.caObjectivePct() }}%</strong> de l'objectif</span><i class="ri-store-2-line"></i>
+      </div>
+      <div class="rep__kpi">
+        <small>Dépenses du Mois</small><b class="is-red">2 450 000 CFA</b>
+        <span><strong>{{ st.expensesPct() }}%</strong> du Chiffre d'affaires</span><i class="ri-wallet-3-line"></i>
+      </div>
+      <div class="rep__kpi">
+        <small>Marge bénéficiaire</small><b>{{ st.fmt(st.margin()) }} CFA</b>
+        <span>{{ st.marginPct() }}% du chiffre d'affaires</span><i class="ri-line-chart-line"></i>
+      </div>
+      <div class="rep__kpi">
+        <small>Objectif du Mois</small><b>2 177 419.35 CFA</b>
+        <span>Écart : <em>{{ st.gap() }} CFA</em></span><i class="ri-focus-3-line"></i>
+      </div>
+    </div>
+
+    <div class="rep__card rep__tables">
+      @for (t of tables; track t.title) {
+      <div class="rep__tbl" [class]="'rep__tbl--' + t.cols.length">
+        <h6><i [class]="t.icon"></i>{{ t.title }}</h6>
+        <div class="rep__row rep__row--head">
+          @for (c of t.cols; track c) {<span>{{ c }}</span>}
+        </div>
+        @for (r of t.rows; track r.name) {
+        <div class="rep__row" [class.rep__row--total]="r.name === 'TOTAL'"
+          [class.is-changed]="r.q[0] !== r.q[1] || r.m[0] !== r.m[1]">
+          <span>{{ r.name }}</span>
+          @if (t.cols.length === 4) {<span>{{ r.q[st.reportLive() ? 1 : 0] }}</span>}
+          <span class="rep__amt">{{ r.m[st.reportLive() ? 1 : 0] }}</span>
+          <span><em class="rep__pct" [class.rep__pct--warm]="t.warm">{{ r.p[st.reportLive() ? 1 : 0] }}</em></span>
+        </div>
+        }
+      </div>
+      }
+    </div>
+
+    <div class="rep__card rep__lower">
+      <div class="rep__tbl rep__tbl--seller">
+        <h6><i class="ri-user-star-line"></i>Vente par vendeur</h6>
+        <div class="rep__row rep__row--head"><span>Vendeur</span><span>Montant</span><span>Objectif</span><span>%</span>
+        </div>
+        <div class="rep__row"><span>Diakairdia Sy</span><span class="rep__amt">{{ st.fmt(st.ca()) }}
+            CFA</span><span>—</span><span>—</span></div>
+        <div class="rep__row rep__row--total"><span>TOTAL</span><span class="rep__amt">{{ st.fmt(st.ca()) }}
+            CFA</span><span>—</span><span>—</span></div>
+      </div>
+
+      <div class="rep__donut">
+        <h6><i class="ri-pie-chart-2-line"></i>Répartition des charges</h6>
+        <div class="rep__donut-body">
+          <svg viewBox="0 0 42 42">
+            <circle class="rep__ring" cx="21" cy="21" r="15.9" pathLength="100" />
+            <circle class="rep__seg" cx="21" cy="21" r="15.9" pathLength="100" stroke="#2f7de1"
+              stroke-dasharray="100 0" />
+            <text x="21" y="19.5" class="rep__donut-k">TOTAL</text><text x="21" y="25" class="rep__donut-v">2.5M</text>
+          </svg>
+          <div class="rep__legend">
+            <span><i style="background:#2f7de1"></i>Charges fixes <b>2 450 000 CFA</b><em
+                class="rep__pct">100,0%</em></span>
+            <span class="rep__legend-total">TOTAL<b>2 450 000 CFA</b></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rep__donut">
+        <h6><i class="ri-store-2-line"></i>Répartition du CA</h6>
+        <div class="rep__donut-body">
+          <svg viewBox="0 0 42 42">
+            <circle class="rep__ring" cx="21" cy="21" r="15.9" pathLength="100" />
+            @for (seg of caSegments; track seg.label) {
+            <circle class="rep__seg" cx="21" cy="21" r="15.9" pathLength="100" [attr.stroke]="seg.color"
+              [attr.stroke-dasharray]="seg.pct + ' ' + (100 - seg.pct)" [attr.stroke-dashoffset]="-seg.offset"
+              [style.--seg-delay]="$index * 0.25 + 's'" />
+            }
+            <text x="21" y="19.5" class="rep__donut-k">TOTAL</text><text x="21" y="25" class="rep__donut-v">2.1M</text>
+          </svg>
+          <div class="rep__legend">
+            @for (seg of caSegments; track seg.label) {
+            <span><i [style.background]="seg.color"></i>{{ seg.label }} <b>{{ seg.amount }}</b><em class="rep__pct"
+                [style.color]="seg.color">{{ seg.pctLabel }}</em></span>
+            }
+            <span class="rep__legend-total">TOTAL CA<b>{{ st.fmt(st.ca()) }} CFA</b></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="rep__goal">
+        <span><i class="ri-bar-chart-2-fill"></i><small>SUIVI OBJECTIF</small><b>Rythme de croisière</b></span>
+        <span><small>PROGRESSION</small><b>{{ st.caObjectivePct() }}%</b> · 93,33% attendu <em>(+3,2
+            pts)</em><small>Proj. 2 252 250 CFA · J28/30</small></span>
+        <span><i class="ri-lightbulb-line"></i><small>CONSEIL</small>Rythme de croisière — performance conforme au plan.
+          Il reste 2 j pour dégager un excédent.</span>
+      </div>
+    </div>
+
+    <div class="rep__card rep__chart">
+      <h6><i class="ri-bar-chart-fill"></i>CA journalier vs Dépenses <b>30 jours</b></h6>
+      <div class="rep__chart-legend"><span><i class="is-ca"></i>CA</span><span><i class="is-dep"></i>Dépenses</span>
+      </div>
+      <div class="rep__plot">
+        @for (y of ['2.5M', '2.0M', '1.5M', '1.0M', '500k', '0']; track y) {<span class="rep__grid"><em>{{ y
+            }}</em></span>}
+        <div class="rep__days">
+          @for (d of days; track d.label) {
+          <span class="rep__day" [style.--i]="$index">
+            <i class="is-ca" [style.height.%]="d.ca" [class.is-today]="d.today"></i><i class="is-dep"
+              [style.height.%]="d.dep" [class.is-alert]="d.alert"></i>
+            <small>{{ d.label }}</small>
+            @if (d.alert) {
+            <span class="rep__insight"><i class="ri-eye-line"></i><b>À surveiller · 15/09</b>Dépenses 2 300 000 CFA ·
+              Restauration</span>
+            }
+          </span>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

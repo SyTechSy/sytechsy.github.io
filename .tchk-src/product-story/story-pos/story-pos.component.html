@@ -1,0 +1,162 @@
+<!-- ============ CAISSE (POS plein écran) ============ -->
+<div class="pos">
+  <header class="pos__top">
+    <i class="ri-arrow-left-s-line pos__back"></i>
+    <span class="pos__tab is-active">Ventes POS</span>
+    <span class="pos__tab">Commandes</span>
+    <span class="pos__tab">Historique</span>
+    <span class="pos__tab pos__tab--icon"><i class="ri-add-line"></i></span>
+    <span class="pos__tab is-active">001</span>
+    <span class="app__spacer"></span>
+    <i class="ri-lock-line pos__icon"></i>
+    <i class="ri-refresh-line pos__icon"></i>
+    <i class="ri-calculator-fill pos__icon pos__icon--calc"></i>
+    <span class="pos__store">Ma Boutique<i class="ri-arrow-down-s-line"></i></span>
+    <span class="pos__search">Recherche des produits<i class="ri-search-line"></i></span>
+    <span class="pos__grid"><i class="ri-apps-2-fill"></i></span>
+    <span class="pos__h">H</span>
+    <i class="ri-menu-line pos__icon"></i>
+  </header>
+
+  <!-- Vente -->
+  <div class="pos__body">
+    <aside class="pos__cats">
+      <div class="pos__cats-head">Catégories<i class="ri-menu-3-line"></i></div>
+      @for (c of categories; track c.name; let first = $first) {
+      <div class="pos__cat" [class.is-active]="first"><span>{{ c.name }}</span><b>{{ c.count }}</b></div>
+      }
+    </aside>
+
+    <div class="pos__products">
+      @for (p of products; track $index) {
+      <div class="prod" [class.is-picked]="st.inCart(p.key)" [attr.data-anchor]="p.key ? 'p-' + p.key : null"
+        [class]="p.key ? 'prod--' + p.key : ''">
+        @if (p.key) {<span class="prod__badge">1</span>}
+        <i class="ri-star-line prod__star"></i>
+        @if (p.image) {
+        <img class="prod__img" [src]="'assets/story/' + p.image + '.jpg'" alt="" loading="lazy" />
+        } @else {
+        <span class="prod__letter">{{ p.letter }}</span>
+        }
+        <b class="prod__name">{{ p.name }}</b>
+        <span class="prod__stock" [class.is-low]="p.low">{{ p.stock }}</span>
+        <span class="prod__exp">{{ p.exp }}</span>
+        <span class="prod__foot"><b>{{ p.price }}</b><i class="ri-subtract-line"></i></span>
+      </div>
+      }
+    </div>
+
+    <aside class="pos__cart">
+      <div class="pos__cart-head">
+        <span><i class="ri-shopping-cart-line"></i>{{ st.picked() }} article{{ st.picked() > 1 ? 's' : '' }}</span>
+        <span class="pos__clear"><i class="ri-delete-bin-6-line"></i>Vider le panier</span>
+      </div>
+      <div class="pos__lines" data-anchor="cart">
+        @for (item of cart; track item.key; let i = $index) {
+        <div class="pos__line" [class.is-in]="st.picked() > i">
+          <span>1</span><span class="pos__line-name">{{ item.name }} ({{ st.fmt(item.price) }} CFA)</span>
+          <b>{{ st.fmt(item.price) }} CFA</b><i class="ri-close-circle-fill"></i>
+        </div>
+        }
+      </div>
+      <div class="pos__sum"><span>Taxes</span><span>00 CFA</span></div>
+      <div class="pos__sum pos__sum--total"><b>Total</b><b>{{ st.fmt(st.cartTotal()) }} CFA</b></div>
+      <div class="pos__actions">
+        <span><i class="ri-customer-service-line"></i>Client</span>
+        <span><i class="ri-printer-line pos__blue"></i>Commande</span>
+        <span><i class="ri-user-line pos__blue"></i>Vendeur</span>
+        <span class="pos__note"><i class="ri-sticky-note-line"></i>Note</span>
+      </div>
+      <div class="pos__pad">
+        @for (k of numpad; track k) {
+        <span [class.is-qty]="k === 'Qté'" [class.is-muted]="k === 'Prix'">{{ k }}</span>
+        }
+      </div>
+      <div class="pos__pay" data-anchor="pay">Paiement</div>
+    </aside>
+  </div>
+
+  <!-- Produits qui rejoignent le panier -->
+  @for (item of cart; track item.key; let i = $index) {
+  <span class="fly" [class]="'fly--' + item.key">
+    @if (item.key === 'dentifrice') {<span class="prod__letter">D</span>}
+    @else {<img [src]="'assets/story/' + (item.key === 'rasoir' ? 'rasoir' : 'nivea') + '.jpg'" alt="" />}
+  </span>
+  }
+
+  <!-- Modal de paiement -->
+  <div class="pay">
+    <div class="pay__modal">
+      <i class="ri-close-line pay__close"></i>
+      <div class="pay__left">
+        <div class="pay__row pay__row--gray"><span>Montant total</span><b class="pay__big">5 700 CFA</b></div>
+        <div class="pay__row pay__row--blue">
+          <span class="pay__chip">Espèces</span>
+          <span class="pay__input">{{ st.cash() }}<i class="pay__caret"></i></span>
+          <i class="ri-close-line pay__x"></i>
+        </div>
+        <div class="pay__row pay__row--gray"><span>Montant à payer</span><b>5 700 CFA</b></div>
+        <div class="pay__return"><span>Montant à retourner</span><b>0 CFA</b></div>
+      </div>
+      <div class="pay__right">
+        <div class="pay__methods">
+          @for (m of methods; track m.label; let first = $first) {
+          <div class="pay__method" [class.is-selected]="first" [attr.data-anchor]="first ? 'especes' : null">
+            <i [class]="m.icon"></i><span>{{ m.label }}</span>
+          </div>
+          }
+        </div>
+        <div class="pay__opts"><span>Client</span><span>Remise Globale</span><span><i
+              class="ri-sticky-note-line"></i>Note</span></div>
+        <div class="pos__pad pay__pad">
+          @for (k of numpad; track k) {
+          <span [class.is-qty]="k === 'Qté'">{{ k }}</span>
+          }
+        </div>
+        <div class="pay__validate" data-anchor="valider">Valider Paiement</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reçu -->
+  <div class="rcpt">
+    <div class="rcpt__left">
+      <div class="rcpt__ok"><i class="ri-checkbox-circle-fill"></i>Paiement réussi</div>
+      <div class="rcpt__amount"><span>5 700 CFA</span><span>/ Espèces</span></div>
+      <div class="rcpt__edit">Modifier le reçu</div>
+      <div class="rcpt__switch"><span class="is-active">Reçu</span><span>Facture</span><span
+          class="rcpt__print">Imprimer</span></div>
+      <div class="rcpt__send"><i class="ri-mail-line is-active"></i><i
+          class="ri-whatsapp-line"></i><span>example&#64;gmail.com</span><i class="ri-send-plane-fill rcpt__plane"></i>
+      </div>
+      <div class="rcpt__new">Nouvelle commande</div>
+    </div>
+    <div class="rcpt__right">
+      <div class="rcpt__slot"></div>
+      <div class="ticket">
+        <div class="ticket__paper">
+          <div class="ticket__brand"><img src="assets/logo/recu.webp" alt="Tchakeda" /></div>
+          <p>Ticket : 51929281717F</p>
+          <p>28/09/2026 17:17</p>
+          <p>Servi par : Diakairdia Sy</p>
+          <p>Client : Inconnu</p>
+          <p>Boutique : Ma Boutique</p>
+          @for (item of cart; track item.key) {
+          <div class="ticket__item">
+            <span><b>{{ item.name }}&nbsp;&nbsp;1</b><small>{{ st.fmt(item.price) }} CFA / Unité(s)</small></span>
+            <b>{{ st.fmt(item.price) }} CFA</b>
+          </div>
+          }
+          <div class="ticket__sum"><span>Sous-total</span><span>5700 CFA</span></div>
+          <div class="ticket__sum"><b>Total</b><b>5700 CFA</b></div>
+          <div class="ticket__sum ticket__sum--top"><span>Espèces</span><span>5700 CFA</span></div>
+          <div class="ticket__sum"><span>Monnaie</span><span>0 CFA</span></div>
+          <div class="ticket__barcode">
+            @for (w of barcode; track $index) {<i [style.flex-grow]="w"></i>}
+          </div>
+          <small class="ticket__by">Généré par Tchakeda</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

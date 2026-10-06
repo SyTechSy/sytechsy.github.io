@@ -1,0 +1,1246 @@
+@use 'sass:list';
+@use 'story' as *;
+
+$brand-blue: #0672e4;
+$navy: #0f172a;
+$muted: #64748b;
+$line: #e2e8f0;
+
+// Point de focus de la caméra mobile (en unités d'écran), animable.
+@property --fx {
+  syntax: '<number>';
+  inherits: false;
+  initial-value: 50;
+}
+
+app-product-story {
+  display: block;
+}
+
+.ps {
+  position: relative;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 14%);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color: $navy;
+}
+
+// Lecture automatique : la scène tient dans un seul écran, le visiteur défile librement.
+.ps__sticky {
+  position: relative;
+  height: 100vh;
+  height: 70svh;
+  display: flex;
+  align-items: center;
+  // padding: 72px 0 28px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.ps__layout {
+  width: min(1440px, calc(100% - 2.5rem));
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+// La narration est centrée au-dessus de l'application.
+.ps__copy {
+  width: 100%;
+  max-width: 760px;
+  text-align: center;
+}
+
+/* ---------------- NARRATION ---------------- */
+.ps__kicker {
+  display: grid;
+  margin: 0 0 0.6rem;
+  color: $brand-blue;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+
+  span {
+    grid-area: 1 / 1;
+    transition: opacity 0.4s ease;
+  }
+
+  span:last-child,
+  .is-prologue & span:first-child {
+    opacity: 1;
+  }
+
+  span:first-child,
+  .is-prologue & span:last-child {
+    opacity: 0;
+  }
+}
+
+// Pendant le prologue, le titre de la section est celui des fonctionnalités ; il laisse place au titre de l'histoire.
+.ps__title {
+  display: grid;
+
+  span {
+    grid-area: 1 / 1;
+    transition: opacity 0.5s ease, transform 0.6s $ease-out;
+  }
+
+  span:last-child,
+  .is-prologue & span:first-child {
+    opacity: 1;
+    transform: none;
+  }
+
+  span:first-child,
+  .is-prologue & span:last-child {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.ps__title {
+  margin: 0 0 0.9rem;
+  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+}
+
+.ps__captions {
+  display: grid;
+  min-height: 6.6rem;
+}
+
+// L'application prend toute la place restante sous la narration, sans jamais dépasser l'écran.
+.ps__device {
+  width: min(100%, 1180px, calc((100svh - 360px) * 1.93));
+}
+
+// Écrans peu hauts : la narration garde l'essentiel.
+@media (max-height: 820px) and (min-width: 768px) {
+  .ps__title {
+    display: none;
+  }
+
+  .ps__device {
+    width: min(100%, 1180px, calc((100svh - 300px) * 1.93));
+  }
+}
+
+.ps__caption {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transform: translateY(10px);
+  // L'ancien texte s'efface vite, le nouveau n'arrive qu'après : centrés, ils ne se croisent jamais.
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+
+  &.is-active {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.5s $ease-out 0.25s, transform 0.6s $ease-out 0.25s;
+  }
+
+  h3 {
+    margin: 0.3rem 0 0.4rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: $navy;
+  }
+
+  p {
+    margin: 0;
+    color: $muted;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+}
+
+.ps__caption-num {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: $brand-blue;
+}
+
+/* Commandes de lecture */
+/* ---------------- NAVIGATEUR ---------------- */
+.ps__device {
+  position: relative;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid $line;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.05),
+    0 50px 100px -40px rgba(15, 23, 42, 0.35),
+    0 30px 60px -30px rgba(6, 114, 228, 0.18);
+  overflow: hidden;
+  // L'appareil répond au curseur : quelques degrés, jamais plus.
+  transform: perspective(1800px) rotateX(calc(var(--my, 0) * -1.6deg)) rotateY(calc(var(--mx, 0) * 2.2deg));
+
+  .is-chaos &,
+  .is-order & {
+    visibility: hidden;
+  }
+}
+
+.ps__chrome {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  height: 34px;
+  padding: 0 0.9rem;
+  background: #fbf9f2;
+  border-bottom: 1px solid #ece8dc;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #5f6368;
+  font-size: 12px;
+}
+
+.ps__chrome-nav {
+  display: flex;
+  gap: 0.6rem;
+  font-size: 14px;
+
+  i:nth-child(2) {
+    opacity: 0.45;
+  }
+}
+
+.ps__url {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  height: 24px;
+  padding: 0 0.8rem;
+  border-radius: 999px;
+  background: #efebe0;
+  min-width: 0;
+}
+
+.ps__url-texts {
+  flex: 1;
+  display: grid;
+  min-width: 0;
+  color: #202124;
+
+  span {
+    grid-area: 1 / 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+
+    &.is-active {
+      opacity: 1;
+      transition: opacity 0.35s ease 0.35s;
+    }
+  }
+}
+
+.ps__chrome-avatar {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1f2937, #4b5563);
+}
+
+/* ---------------- ÉCRAN ----------------
+   Canvas de 100 × 51,9 unités, soit exactement 2000 × 1038 px de l'application. */
+.ps__screen {
+  position: relative;
+  aspect-ratio: 2000 / 1038;
+  container-type: size;
+  overflow: hidden;
+  background: #fff;
+  font-family: 'Poppins', 'Plus Jakarta Sans', system-ui, sans-serif;
+  color: $app-ink;
+  line-height: 1.3;
+  -webkit-font-smoothing: antialiased;
+  --u: calc(100cqh / 51.9);
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+// Tous les écrans vivent dans ce canvas ; sur mobile, la caméra le fait glisser.
+.ps__canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: u(100);
+  height: u(51.9);
+  perspective: u(240);
+  perspective-origin: 50% 30%;
+}
+
+.app,
+.pos {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: u(100);
+  height: u(51.9);
+  transform-origin: var(--feere-x, 90%) var(--feere-y, 8%);
+  will-change: transform, opacity;
+}
+
+/* ======== COQUILLE APPLICATION ======== */
+.app {
+  display: grid;
+  grid-template-columns: u(14.75) 1fr;
+  grid-template-rows: u(3.5) 1fr;
+  background: $app-bg;
+  transition: transform $camera $ease-camera, opacity 0.5s ease;
+
+  // La caméra plonge dans le bouton « Feere kɛ yɔrɔ »…
+  @include at(1, 2, 3, 4) {
+    transform: scale(3.2);
+    opacity: 0;
+    transition: transform $camera $ease-camera 0.45s, opacity 0.3s ease 0.55s;
+  }
+}
+
+.app__head {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: u(1.6);
+  padding: 0 u(2.8) 0 u(1.5);
+  background: linear-gradient(90deg, #559af7 0%, #6aa7f8 50%, #79b1f9 100%);
+  color: #fff;
+}
+
+.app__logo {
+  width: u(10);
+  height: auto;
+}
+
+.app__burger {
+  margin-left: u(1.4);
+  font-size: u(1.4);
+}
+
+.app__spacer {
+  flex: 1;
+}
+
+.app__icon {
+  font-size: u(1.35);
+  margin-left: u(1.9);
+}
+
+.app__sep {
+  width: 1px;
+  height: u(2);
+  margin: 0 u(0.6) 0 u(1.2);
+  background: rgba(255, 255, 255, 0.45);
+}
+
+.app__org {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.15;
+
+  b {
+    font-size: u(0.95);
+    font-weight: 600;
+  }
+
+  small {
+    font-size: u(0.72);
+  }
+}
+
+.app__avatar {
+  display: grid;
+  place-items: center;
+  width: u(2.25);
+  height: u(2.25);
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  background: linear-gradient(135deg, #1f2937, #475569);
+  font-size: u(0.7);
+  font-weight: 600;
+}
+
+.app__side {
+  display: flex;
+  flex-direction: column;
+  padding-top: u(0.4);
+  background: #fff;
+  border-right: 1px solid #d4d8e0;
+}
+
+.app__nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: u(1.1);
+  height: u(3.05);
+  padding: 0 u(1.3) 0 u(1.7);
+  font-size: u(0.95);
+  color: #374151;
+  transition: background 0.5s ease, color 0.5s ease;
+
+  >i:first-child {
+    font-size: u(1.1);
+    color: #4b5563;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: u(0.22);
+    background: $app-blue;
+    transform: scaleY(0);
+    transition: transform 0.5s $ease-out;
+  }
+
+  &.is-active {
+    background: #efefef;
+    color: #111827;
+    font-weight: 600;
+
+    &::before {
+      transform: none;
+    }
+  }
+}
+
+.app__chev {
+  margin-left: auto;
+  font-size: u(1);
+  transition: transform 0.4s $ease-out;
+
+  &.is-open {
+    transform: rotate(90deg);
+  }
+}
+
+.app__sub {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.6s $ease-out;
+
+  &.is-open {
+    grid-template-rows: 1fr;
+  }
+
+  >div {
+    overflow: hidden;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    margin-left: u(1.7);
+    border-left: 1px solid #d1d5db;
+  }
+
+  span {
+    position: relative;
+    padding: u(0.75) 0 u(0.75) u(2);
+    font-size: u(0.95);
+    color: #374151;
+  }
+
+  .is-current {
+    font-weight: 600;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: u(1.1);
+      top: 50%;
+      width: u(0.35);
+      height: u(0.35);
+      margin-top: u(-0.175);
+      border-radius: 50%;
+      background: $app-blue;
+    }
+  }
+}
+
+.app__version {
+  align-self: center;
+  margin-top: u(2.2);
+  padding: u(0.15) u(0.5);
+  border-radius: u(0.5);
+  background: #f3f4f6;
+  font-size: u(0.8);
+  color: $app-muted;
+}
+
+.app__main {
+  position: relative;
+  overflow: hidden;
+}
+
+/* ======== CURSEUR ========
+   Il montre le geste réel du caissier : il ne décore pas, il agit. */
+.cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: u(1.6);
+  height: u(1.6);
+  pointer-events: none;
+  opacity: 0;
+  translate: calc(var(--feere-x, 0px) - #{u(8)}) calc(var(--feere-y, 0px) + #{u(9)});
+  transition: opacity 0.3s ease, translate 1s $ease-camera;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    fill: #111827;
+    stroke: #fff;
+    stroke-width: 1.6;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 2px 3px rgba(15, 23, 42, 0.35));
+  }
+
+  @include at(0) {
+    opacity: 1;
+    translate: calc(var(--feere-x, 0px) - #{u(7.5)}) calc(var(--feere-y, 0px) + #{u(1)});
+    transition: opacity 0.5s ease 1s, translate 1.2s $ease-camera 1s;
+  }
+
+  @include at(1) {
+    animation: ps-cur-1 1.9s $ease-camera both;
+  }
+
+  @include at(2) {
+    animation: ps-cur-2 2.9s $ease-camera both;
+  }
+
+  @include at(3) {
+    animation: ps-cur-3 2.7s $ease-camera both;
+  }
+
+  @include at(7) {
+    animation: ps-cur-8 3.7s $ease-camera both;
+  }
+}
+
+@keyframes ps-cur-8 {
+  0% {
+    opacity: 0;
+    translate: calc(var(--inv-amount-x) + #{u(5)}) calc(var(--inv-amount-y) + #{u(5)});
+    scale: 1;
+  }
+
+  8% {
+    opacity: 1;
+  }
+
+  12% {
+    translate: var(--inv-amount-x) var(--inv-amount-y);
+    scale: 1;
+  }
+
+  14% {
+    scale: 0.8;
+  }
+
+  17% {
+    scale: 1;
+    translate: var(--inv-amount-x) var(--inv-amount-y);
+  }
+
+  35% {
+    translate: var(--inv-mode-x) var(--inv-mode-y);
+    scale: 1;
+  }
+
+  38% {
+    scale: 0.8;
+  }
+
+  41% {
+    scale: 1;
+    translate: var(--inv-mode-x) var(--inv-mode-y);
+  }
+
+  56% {
+    translate: var(--inv-pay-x) var(--inv-pay-y);
+    scale: 1;
+  }
+
+  59% {
+    scale: 0.8;
+  }
+
+  62% {
+    scale: 1;
+    translate: var(--inv-pay-x) var(--inv-pay-y);
+  }
+
+  84% {
+    translate: var(--inv-valider-x) var(--inv-valider-y);
+    scale: 1;
+  }
+
+  87% {
+    scale: 0.8;
+  }
+
+  90%,
+  100% {
+    scale: 1;
+    opacity: 1;
+    translate: var(--inv-valider-x) var(--inv-valider-y);
+  }
+}
+
+@keyframes ps-cur-1 {
+  0% {
+    opacity: 1;
+    translate: calc(var(--feere-x) - #{u(7.5)}) calc(var(--feere-y) + #{u(1)});
+    scale: 1;
+  }
+
+  14% {
+    translate: var(--feere-x) var(--feere-y);
+    scale: 1;
+  }
+
+  18% {
+    scale: 0.8;
+  }
+
+  24% {
+    scale: 1;
+    opacity: 1;
+  }
+
+  40% {
+    opacity: 0;
+    translate: var(--feere-x) var(--feere-y);
+  }
+
+  80% {
+    opacity: 0;
+    translate: calc(var(--p-dentifrice-x) + #{u(3)}) calc(var(--p-dentifrice-y) + #{u(3)});
+  }
+
+  100% {
+    opacity: 1;
+    translate: calc(var(--p-dentifrice-x) + #{u(1)}) calc(var(--p-dentifrice-y) + #{u(1)});
+  }
+}
+
+@keyframes ps-cur-2 {
+  0% {
+    opacity: 1;
+    translate: calc(var(--p-dentifrice-x) + #{u(1)}) calc(var(--p-dentifrice-y) + #{u(1)});
+    scale: 1;
+  }
+
+  6% {
+    translate: var(--p-dentifrice-x) var(--p-dentifrice-y);
+    scale: 1;
+  }
+
+  9% {
+    scale: 0.8;
+  }
+
+  13% {
+    scale: 1;
+    translate: var(--p-dentifrice-x) var(--p-dentifrice-y);
+  }
+
+  30% {
+    translate: var(--p-rasoir-x) var(--p-rasoir-y);
+    scale: 1;
+  }
+
+  33% {
+    scale: 0.8;
+  }
+
+  37% {
+    scale: 1;
+    translate: var(--p-rasoir-x) var(--p-rasoir-y);
+  }
+
+  54% {
+    translate: var(--p-nivea-x) var(--p-nivea-y);
+    scale: 1;
+  }
+
+  57% {
+    scale: 0.8;
+  }
+
+  61% {
+    scale: 1;
+    translate: var(--p-nivea-x) var(--p-nivea-y);
+  }
+
+  88%,
+  100% {
+    opacity: 1;
+    translate: var(--pay-x) var(--pay-y);
+  }
+}
+
+@keyframes ps-cur-3 {
+  0% {
+    opacity: 1;
+    translate: var(--pay-x) var(--pay-y);
+    scale: 1;
+  }
+
+  3% {
+    scale: 0.8;
+  }
+
+  7% {
+    scale: 1;
+    translate: var(--pay-x) var(--pay-y);
+  }
+
+  29% {
+    translate: var(--especes-x) var(--especes-y);
+    scale: 1;
+  }
+
+  33% {
+    scale: 0.8;
+  }
+
+  37% {
+    scale: 1;
+    translate: var(--especes-x) var(--especes-y);
+  }
+
+  69% {
+    translate: var(--valider-x) var(--valider-y);
+    scale: 1;
+  }
+
+  72% {
+    scale: 0.8;
+  }
+
+  76% {
+    scale: 1;
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    translate: var(--valider-x) var(--valider-y);
+  }
+}
+
+/* ---------------- TABLETTE ---------------- */
+@media (max-width: 1100px) {
+  .ps__title {
+    display: none;
+  }
+
+  .ps__caption h3 {
+    font-size: 1.08rem;
+  }
+
+  .ps__caption p {
+    font-size: 0.9rem;
+  }
+
+  .ps__device {
+    width: min(100%, calc((100svh - 300px) * 1.93));
+  }
+}
+
+/* ---------------- MOBILE : LA CAMÉRA SUIT L'ACTION ----------------
+   Plutôt que de réduire l'écran, on garde l'interface à une taille lisible
+   et la caméra glisse vers l'endroit où il se passe quelque chose. */
+@media (max-width: 767px) {
+  .ps__sticky {
+    padding: 64px 0 16px;
+  }
+
+  .ps__layout {
+    width: calc(100% - 2rem);
+  }
+
+  .ps__captions {
+    min-height: 7.4rem;
+  }
+
+  .ps__device {
+    width: 100%;
+    border-radius: 16px;
+  }
+
+  .ps__chrome-nav,
+  .ps__chrome-avatar,
+  .ps__url>i {
+    display: none;
+  }
+
+  .ps__screen {
+    aspect-ratio: auto;
+    height: min(calc(100svh - 330px), 132vw);
+    min-height: 300px;
+  }
+
+  // Le canvas glisse horizontalement vers le point de focus (--fx, en unités d'écran).
+  .ps__canvas {
+    --fx: 78;
+    transform: translateX(calc(-1 * clamp(0px, var(--fx) * var(--u) - 50cqw, 100 * var(--u) - 100cqw)));
+    transition: --fx 1.2s $ease-camera;
+
+    @include at(1) {
+      --fx: 40;
+      transition-delay: 0.6s;
+    }
+
+    @include at(2) {
+      animation: ps-pan-2 3s $ease-camera both;
+    }
+
+    @include at(3) {
+      animation: ps-pan-3 2.8s $ease-camera both;
+    }
+
+    @include at(4) {
+      animation: ps-pan-4 3s $ease-camera both;
+    }
+
+    @include at(5) {
+      animation: ps-pan-5 3.4s $ease-camera both;
+    }
+
+    @include at(6) {
+      --fx: 62;
+    }
+
+    @include at(7) {
+      animation: ps-pan-8 3.8s $ease-camera both;
+    }
+
+    @include at(8) {
+      animation: ps-pan-6 3s $ease-camera both;
+    }
+
+    @include at(9) {
+      animation: ps-pan-9 3s $ease-camera both;
+    }
+
+    @include at(10) {
+      --fx: 66;
+      transition-delay: 0.3s;
+    }
+
+    @include at(11) {
+      --fx: 50;
+    }
+
+    @include at(12) {
+      --fx: 40;
+    }
+  }
+}
+
+@keyframes ps-pan-2 {
+
+  0%,
+  62% {
+    --fx: 40;
+  }
+
+  85%,
+  100% {
+    --fx: 84;
+  }
+}
+
+@keyframes ps-pan-3 {
+
+  0%,
+  8% {
+    --fx: 84;
+  }
+
+  25%,
+  38% {
+    --fx: 30;
+  }
+
+  60%,
+  100% {
+    --fx: 80;
+  }
+}
+
+@keyframes ps-pan-4 {
+
+  0%,
+  20% {
+    --fx: 26;
+  }
+
+  45%,
+  100% {
+    --fx: 74;
+  }
+}
+
+@keyframes ps-pan-5 {
+
+  0%,
+  30% {
+    --fx: 45;
+  }
+
+  55%,
+  100% {
+    --fx: 80;
+  }
+}
+
+@keyframes ps-pan-6 {
+
+  0%,
+  100% {
+    --fx: 32;
+  }
+}
+
+@keyframes ps-pan-8 {
+
+  0%,
+  40% {
+    --fx: 66;
+  }
+
+  52%,
+  100% {
+    --fx: 78;
+  }
+}
+
+@keyframes ps-pan-9 {
+
+  0%,
+  45% {
+    --fx: 30;
+  }
+
+  75%,
+  100% {
+    --fx: 38;
+  }
+}
+
+/* ---------------- MOUVEMENT RÉDUIT ----------------
+   L'histoire reste lisible étape par étape, en fondus courts, sans trajectoires. */
+.ps--reduced {
+
+  *,
+  *::before,
+  *::after {
+    transition-property: opacity, color, background, border-color, box-shadow !important;
+    transition-duration: 200ms !important;
+    transition-delay: 0ms !important;
+    animation: none !important;
+  }
+
+  .app,
+  .pos,
+  .pg,
+  .rep,
+  .pay__modal,
+  .ticket__paper,
+  .pos__line,
+  .tbl__body {
+    transform: none !important;
+  }
+
+  .cursor,
+  .fly {
+    display: none;
+  }
+}
+
+/* ======== PROLOGUE : CHAOS → ORGANISATION → PORTAIL ========
+   Signature « le Fil & le Nœud » : un fil cyan (le T du logo) relie les modules,
+   une étincelle le parcourt, et chaque module traversé se noue d'un anneau. */
+$fil: #00a8e8;
+
+.pro {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  .is-story & {
+    visibility: hidden;
+  }
+}
+
+.pro__threads {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+
+  path {
+    fill: none;
+    stroke: $fil;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    opacity: 0.8;
+  }
+}
+
+.pro__spark {
+  fill: #fff;
+  stroke: $fil;
+  stroke-width: 2.5;
+  filter: drop-shadow(0 0 6px rgba(0, 168, 232, 0.9));
+}
+
+.pro__tile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  width: var(--tile, 88px);
+  will-change: transform, opacity;
+  transition: scale 0.35s $ease-out;
+
+  b {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: $navy;
+    white-space: nowrap;
+  }
+
+  // Une fois la grille rangée, chaque module répond au survol.
+  .is-order & {
+    pointer-events: auto;
+
+    &:hover {
+      scale: 1.06;
+    }
+  }
+}
+
+.pro__card {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--tile, 88px);
+  height: var(--tile, 88px);
+  border-radius: 24%;
+  background: #fff;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 1) inset,
+    0 4px 8px rgba(15, 23, 42, 0.04),
+    0 14px 30px rgba(15, 23, 42, 0.09);
+  font-size: calc(var(--tile, 88px) * 0.44);
+
+  i {
+    background: linear-gradient(135deg, var(--c1), var(--c2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  // Le nœud : un anneau cyan, une seule fois, là où la donnée arrive.
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    border: 2px solid $fil;
+    opacity: 0;
+  }
+
+  .is-knot & {
+    box-shadow:
+      0 0 0 1px rgba(0, 168, 232, 0.35),
+      0 14px 30px rgba(0, 168, 232, 0.18);
+    transition: box-shadow 0.5s ease;
+
+    &::after {
+      animation: ps-knot 0.9s $ease-out both;
+    }
+  }
+
+  // Désordre : les modules flottent, chacun à son rythme.
+  .is-chaos .pro__tile:not(.is-set) & {
+    animation: ps-drift 5s ease-in-out var(--d, 0s) infinite alternate;
+  }
+}
+
+@keyframes ps-knot {
+  0% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+
+@keyframes ps-drift {
+  to {
+    translate: 0 -8px;
+    rotate: 3deg;
+  }
+}
+
+/* ======== LE SYSTÈME : L'INTERFACE ÉCLATÉE (étape 12) ========
+   UI normale → les couches se séparent en profondeur, la vente remonte en lumière → UI normale. */
+.ps__screen {
+  transition: background 0.8s ease;
+
+  @include at(11) {
+    background:
+      radial-gradient(circle at 1px 1px, rgba(148, 197, 255, 0.18) 1px, transparent 0) 0 0 / u(1.6) u(1.6),
+      radial-gradient(ellipse at 50% 20%, #13244a, #070d1d 70%);
+  }
+}
+
+.app,
+.app__main,
+.pg-ventes,
+.pg-ventes__card,
+.pg__list,
+.tbl,
+.tbl__body,
+.pg__kpis,
+.tbl__row--new {
+  @include at(11) {
+    transform-style: preserve-3d;
+    overflow: visible;
+  }
+}
+
+.app {
+  @include at(11) {
+    transform-origin: 50% 50%;
+    transform: translateY(u(4)) rotateX(54deg) rotateZ(-36deg) scale(0.54);
+    will-change: auto;
+    transition: transform 1.5s $ease-camera;
+  }
+}
+
+// Chaque couche prend sa hauteur : plus elle porte d'information, plus elle s'élève.
+$layers: (
+  '.app__side': (5, 0.25s),
+  '.app__head': (10, 0.3s),
+  '.pg-ventes__card': (3, 0.35s),
+  '.pg__bar': (6, 0.5s),
+  '.pg__list': (4.5, 0.45s),
+  '.tbl__row--new': (6, 0.8s)
+);
+
+@each $sel, $cfg in $layers {
+  #{$sel} {
+    transition: transform 0.8s $ease-camera, opacity 0.6s ease;
+
+    @include at(11) {
+      transform: translateZ(u(list.nth($cfg, 1)));
+      transition: transform 1.2s $ease-out list.nth($cfg, 2), opacity 0.6s ease;
+    }
+  }
+}
+
+.kpi {
+  transition: transform 0.8s $ease-camera;
+
+  @include at(11) {
+    transform: translateZ(u(13));
+    box-shadow: 0 u(2) u(4) rgba(0, 0, 0, 0.45);
+  }
+
+  @for $i from 1 through 4 {
+    &:nth-child(#{$i}) {
+      @include at(11) {
+        transition: transform 1.2s $ease-out #{0.55 + $i * 0.08}s,
+        box-shadow 1s ease;
+      }
+    }
+  }
+}
+
+.tbl__row--new {
+  @include at(11) {
+    background: #e7f5fd !important;
+    box-shadow: 0 0 0 1px rgba(0, 168, 232, 0.6), 0 u(1) u(2.4) rgba(0, 168, 232, 0.35);
+  }
+}
+
+// La donnée de la vente remonte en lumière de sa ligne jusqu'aux indicateurs.
+.beam {
+  position: absolute;
+  left: 64%;
+  top: 50%;
+  width: 3px;
+  height: u(16);
+  margin-top: u(-16);
+  background: linear-gradient(to top, #00a8e8, rgba(0, 168, 232, 0));
+  transform-origin: 50% 100%;
+  transform: rotateX(-90deg) scaleY(0);
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: u(-0.6);
+    left: 50%;
+    width: u(1.2);
+    height: u(1.2);
+    margin-left: u(-0.6);
+    border-radius: 50%;
+    border: 2px solid #00a8e8;
+    opacity: 0;
+  }
+
+  @include at(11) {
+    transform: rotateX(-90deg) scaleY(1);
+    transition: transform 0.9s $ease-out 1.25s;
+
+    &::after {
+      animation: ps-knot 0.9s $ease-out 2s both;
+    }
+  }
+}
+
+/* Mouvement réduit : pas de désordre, pas d'éclatement */
+.ps--reduced {
+  .pro__card {
+    animation: none !important;
+  }
+
+  .ps__device {
+    transform: none;
+  }
+
+  .beam {
+    display: none;
+  }
+}
